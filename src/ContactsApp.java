@@ -60,7 +60,7 @@ public class ContactsApp {
                 addContacts();
                 break;
             case 3:
-
+                //Some code here
                 break;
             case 4:
                 break;
