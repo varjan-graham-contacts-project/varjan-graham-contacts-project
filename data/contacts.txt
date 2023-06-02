@@ -1,4 +1,3 @@
-Jack Blank, 123456782
 John Java, 7438923
 Paige Rackley, 9806583456
 Hello World, 2103459876

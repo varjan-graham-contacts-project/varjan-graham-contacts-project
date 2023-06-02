@@ -14,6 +14,8 @@ public class ContactsApp {
 
     public static Scanner sc = new Scanner(System.in);
     public static int choice;
+
+    public static List<String> contacts;
     public static void main(String[] args) {
         consoleUI();
     }
@@ -79,22 +81,25 @@ public class ContactsApp {
 private static List<String> getContacts() {
     Path datafile = Paths.get("data", "contacts.txt");
     try {
-        List<String> contacts = Files.readAllLines(datafile);
-        System.out.println("Name           | Phone number");
-        System.out.println("-----------------------------");
-        for (String contact : contacts) {
-            String[] contactInfo = contact.split(",");
-            if (contactInfo.length == 2) {
-                String name = contactInfo[0].trim();
-                String phoneNumber = contactInfo[1].trim();
-                String formattedPhoneNumber = formatPhoneNumber(phoneNumber);
-                System.out.println(name + " | " + formattedPhoneNumber);
-            }
-        }
+        contacts = Files.readAllLines(datafile);
         return contacts;
     } catch (IOException e) {
         e.printStackTrace();
         throw new RuntimeException(e);
+    }
+}
+
+private static void displayContacts(List<String> contacts) {
+    System.out.println("Name           | Phone number");
+    System.out.println("-----------------------------");
+    for (String contact : contacts) {
+        String[] contactInfo = contact.split(",");
+        if (contactInfo.length == 2) {
+            String name = contactInfo[0].trim();
+            String phoneNumber = contactInfo[1].trim();
+            String formattedPhoneNumber = formatPhoneNumber(phoneNumber);
+            System.out.println(name + " | " + formattedPhoneNumber);
+        }
     }
 }
 
@@ -119,6 +124,7 @@ private static List<String> getContacts() {
         switch (choice) {
             case 1 -> {
                 getContacts();
+                displayContacts(contacts);
                 askAgain();
             }
             case 2 -> {
