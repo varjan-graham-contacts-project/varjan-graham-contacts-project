@@ -1,6 +1,4 @@
-John Java, 7438923
-Paige Rackley, 9806583456
-Hello World, 2103459876
 Jane Doe, 1234567980
-Bobby International, +55 11 94531-3566
-Eric Cartman, 5511945313566
+Paige Rackley, 2103242334
+Jack Blank, 1234567890
+John Doe, 2345670987
