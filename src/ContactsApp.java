@@ -198,9 +198,9 @@ private static void addContacts() {
                 String existingName = existingContact.split(",")[0].trim();
                 if (existingName.equalsIgnoreCase(name)) {
                     System.out.println("There's already a contact named " + name + ".");
-                    System.out.print("Do you want to overwrite it? (Yes/No): ");
+                    System.out.print("Do you want to overwrite it? (y/n): ");
                     String overwriteChoice = sc.nextLine().trim().toLowerCase();
-                    if (overwriteChoice.equals("yes")) {
+                    if (overwriteChoice.equals("y")) {
                         // Overwrite the existing contact
                         contactsList.set(i, input);
                         Files.write(contactsPath, contactsList);
