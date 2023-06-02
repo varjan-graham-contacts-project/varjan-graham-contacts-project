@@ -33,7 +33,7 @@ public class ContactsApp {
 //        HashMap<String, String> contactInfo = new HashMap<>();
 //        contactInfo.put("Ryan", "1234567");
 //        System.out.println(contactInfo);
-/
+///
 //    }
 
 
@@ -53,28 +53,66 @@ public class ContactsApp {
 
     }
 
-    private static List<String> getContacts() {
-        Path datafile = Paths.get("data", "contacts.txt");
-        try {
-            List<String> contacts = Files.readAllLines(datafile);
-            System.out.println("Name           | Phone number");
-            System.out.println("-----------------------------");
-            for (String contact : contacts) {
-                System.out.println(contact);
-//                String contactArray = Arrays.toString(contact.split(","));
-                //TODO need to save name and number to a variable
-//                System.out.println(contactArray);
-//                String[] ary = contactArray.split(",");
-//                System.out.println(ary);
-//                System.out.println(ary[0]);
-//                System.out.println(ary[1]);
+//    private static List<String> getContacts() {
+//        Path datafile = Paths.get("data", "contacts.txt");
+//        try {
+//            List<String> contacts = Files.readAllLines(datafile);
+//            System.out.println("Name           | Phone number");
+//            System.out.println("-----------------------------");
+//            for (String contact : contacts) {
+//                System.out.println(contact);
+////                String contactArray = Arrays.toString(contact.split(","));
+//                //TODO need to save name and number to a variable
+////                System.out.println(contactArray);
+////                String[] ary = contactArray.split(",");
+////                System.out.println(ary);
+////                System.out.println(ary[0]);
+////                System.out.println(ary[1]);
+//            }
+//            return contacts;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
+private static List<String> getContacts() {
+    Path datafile = Paths.get("data", "contacts.txt");
+    try {
+        List<String> contacts = Files.readAllLines(datafile);
+        System.out.println("Name           | Phone number");
+        System.out.println("-----------------------------");
+        for (String contact : contacts) {
+            String[] contactInfo = contact.split(",");
+            if (contactInfo.length == 2) {
+                String name = contactInfo[0].trim();
+                String phoneNumber = contactInfo[1].trim();
+                String formattedPhoneNumber = formatPhoneNumber(phoneNumber);
+                System.out.println(name + " | " + formattedPhoneNumber);
             }
-            return contacts;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
         }
+        return contacts;
+    } catch (IOException e) {
+        e.printStackTrace();
+        throw new RuntimeException(e);
+    }
+}
 
+    private static String formatPhoneNumber(String phoneNumber) {
+        // Remove any non-digit characters
+        String digitsOnly = phoneNumber.replaceAll("\\D+", "");
+
+        // Determine the appropriate format based on the number of digits
+        if (digitsOnly.length() == 10) {
+            // Format for 10-digit phone numbers: XXX-XXX-XXXX
+            return digitsOnly.substring(0, 3) + "-" + digitsOnly.substring(3, 6) + "-" + digitsOnly.substring(6);
+        } else if (digitsOnly.length() == 7) {
+            // Format for 7-digit phone numbers: XXX-XXXX
+            return digitsOnly.substring(0, 3) + "-" + digitsOnly.substring(3);
+        } else {
+            // Return the original phone number if it doesn't match the expected lengths
+            return phoneNumber;
+        }
     }
 
     private static void handleChoice(int choice) {
@@ -127,21 +165,65 @@ public class ContactsApp {
 
     }
 
-    private static void addContacts() {
-        try {
-            System.out.println("Enter your name and phone number seperated by a comma");
-            String input = sc.nextLine();
-            Files.write(contactsPath, Arrays.asList(input), StandardOpenOption.APPEND);
+//    private static void addContacts() {
+//        try {
+//            System.out.println("Enter your name and phone number seperated by a comma");
+//            String input = sc.nextLine();
+//            Files.write(contactsPath, Arrays.asList(input), StandardOpenOption.APPEND);
+//            List<String> contactsList = Files.readAllLines(contactsPath);
+////            System.out.println(contactsList);
+//            for (int i = 0; i < contactsList.size(); i += 1) {
+//                System.out.println((i + 1) + ": " + contactsList.get(i));
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
+//        }
+//    }
+private static void addContacts() {
+    try {
+        System.out.println("Enter your name and phone number separated by a comma");
+        Path contactsPath = Paths.get("data", "contacts.txt");
+
+        String input = sc.nextLine();
+        String[] contactInfo = input.split(",");
+        if (contactInfo.length == 2) {
+            String name = contactInfo[0].trim();
+            String phoneNumber = contactInfo[1].trim();
+
             List<String> contactsList = Files.readAllLines(contactsPath);
-//            System.out.println(contactsList);
-            for (int i = 0; i < contactsList.size(); i += 1) {
-                System.out.println((i + 1) + ": " + contactsList.get(i));
+
+            // Check if a contact with the same name already exists
+            for (int i = 0; i < contactsList.size(); i++) {
+                String existingContact = contactsList.get(i);
+                String existingName = existingContact.split(",")[0].trim();
+                if (existingName.equalsIgnoreCase(name)) {
+                    System.out.println("There's already a contact named " + name + ".");
+                    System.out.print("Do you want to overwrite it? (Yes/No): ");
+                    String overwriteChoice = sc.nextLine().trim().toLowerCase();
+                    if (overwriteChoice.equals("yes")) {
+                        // Overwrite the existing contact
+                        contactsList.set(i, input);
+                        Files.write(contactsPath, contactsList);
+                        System.out.println("Contact updated successfully.");
+                    } else {
+                        System.out.println("Contact not overwritten.");
+                    }
+                    return;
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+
+            // Add the new contact if no existing contact with the same name was found
+            Files.write(contactsPath, Arrays.asList(input), StandardOpenOption.APPEND);
+            System.out.println("Contact added successfully.");
+        } else {
+            System.out.println("Invalid input format. Please provide name and phone number separated by a comma.");
         }
+    } catch (IOException e) {
+        e.printStackTrace();
+        throw new RuntimeException(e);
     }
+}
 
 
 }
