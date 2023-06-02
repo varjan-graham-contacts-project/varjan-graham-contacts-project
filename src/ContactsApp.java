@@ -126,8 +126,7 @@ private static List<String> getContacts() {
                 askAgain();
             }
             case 3 -> {
-//                TODO need to implement search
-                System.out.println("Sorry still in development");
+                searchContact();
                 askAgain();
             }
             case 4 -> {
@@ -225,5 +224,32 @@ private static void addContacts() {
     }
 }
 
+    private static void searchContact() {
+        System.out.println("Enter the name to search:");
+        String searchName = sc.nextLine();
+
+        List<String> contactsList = getContacts();
+
+        boolean found = false;
+        for (String contact : contactsList) {
+            String[] contactInfo = contact.split(",");
+            if (contactInfo.length == 2) {
+                String name = contactInfo[0].trim();
+                if (name.equalsIgnoreCase(searchName)) {
+                    String phoneNumber = contactInfo[1].trim();
+                    String formattedPhoneNumber = formatPhoneNumber(phoneNumber);
+                    System.out.println("Contact found:");
+                    System.out.println("Name: " + name);
+                    System.out.println("Phone number: " + formattedPhoneNumber);
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            System.out.println("Contact not found.");
+        }
+    }
 
 }
